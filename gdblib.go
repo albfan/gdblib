@@ -77,10 +77,15 @@ func convertCString(cstr string) string {
 // NewGDB creates a new gdb debugging session. Provide the full OS path
 //  to the program to debug. The source root directory is optional in
 //  order to resolve the source file references.
-func NewGDB(program string, srcRoot string) (*GDB, error) {
+func NewGDB(program string, srcRoot string, sudo bool) (*GDB, error) {
 	gdb := &GDB{}
 
-	gdb.gdbCmd = exec.Command("gdb", program, "--interpreter", "mi2")
+   sudoCmd := ""
+   if sudo {
+      sudoCmd = "sudo "
+   }
+
+   gdb.gdbCmd = exec.Command(sudoCmd + "gdb", program, "--interpreter", "mi2")
 	if srcRoot != "" {
 		gdb.gdbCmd.Dir = srcRoot
 	}
